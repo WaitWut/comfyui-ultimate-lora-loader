@@ -1,0 +1,16 @@
+[project]
+name = "ultimate-lora-loader"
+description = "A Power-Lora-Loader-style dynamic LoRA stack node with a real on-disk folder browser, drag-to-reorder, optional CLIP, and per-lora split model/clip strengths."
+version = "1.0.0"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/WaitWut/comfyui-ultimate-lora-loader"
+"Bug Tracker" = "https://github.com/WaitWut/comfyui-ultimate-lora-loader/issues"
+
+[tool.comfy]
+PublisherId = "WaitWut"
+DisplayName = "Ultimate Lora Loader"
+Icon = ""
