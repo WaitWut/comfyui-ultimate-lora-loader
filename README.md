@@ -4,10 +4,11 @@
 
 A dynamic LoRA-stack loader for [ComfyUI](https://github.com/comfyanonymous/ComfyUI), in the spirit of [rgthree's Power Lora Loader](https://github.com/rgthree/rgthree-comfy), with one core difference: clicking **Add Lora** opens a real folder browser instead of one giant flat list. Click into subfolders, breadcrumb back out — nested files show up where they actually live on disk instead of as `subfolder/name.safetensors` strings buried in an alphabetical dropdown.
 
-<!--
-TODO: drop a hero screenshot here showing the node in a populated state,
-e.g. ![Ultimate Lora Loader node with several loras loaded](docs/screenshot-main.png)
--->
+![Add Lora opening a real folder browser instead of a flat list](docs/screenshot-browser.png)
+
+The node in its default state, right after adding it to the canvas:
+
+![Ultimate Lora Loader node in its blank default state](docs/screenshot-blank-state.png)
 
 ## Features
 
@@ -20,12 +21,17 @@ e.g. ![Ultimate Lora Loader node with several loras loaded](docs/screenshot-main
 - **Toggle-all / delete-all** — bulk controls in the header row, column-aligned with the per-row toggle and trash icons
 - **Auto-growing node** — the node resizes itself to fit your lora list; shrink it manually below that and the list scrolls internally instead of spilling out
 
-<!--
-TODO: drop supporting screenshots here, e.g.:
-![Add Lora folder browser popup](docs/screenshot-browser.png)
-![Row layout with drag handle, priority, toggle, strength steppers](docs/screenshot-row.png)
-![CLIP strength column appearing when clip is connected](docs/screenshot-clip-optional.png)
--->
+A populated stack — drag handle, priority number, toggle, name, strength stepper, and trash icon, all column-aligned with the header row's toggle-all and delete-all controls:
+
+![Populated lora stack showing drag handle, priority, toggle, name, and strength columns](docs/screenshot-row.png)
+
+Disabling a row (toggle off) dims it, while an added third row still keeps the enabled ones visually distinct:
+
+![A disabled row alongside two enabled, highlighted rows](docs/screenshot-disabled-row.png)
+
+Connect `clip` and every row gains an independent second stepper — the header switches from a single "Strength" column to "Model" and "Clip":
+
+![Clip connected, showing the header split into Model and Clip columns with a second stepper per row](docs/screenshot-clip-optional.png)
 
 ## Install
 
