@@ -83,14 +83,28 @@ Yes. Each LoRA in the stack is applied as a sequential patch on top of whatever 
 - Backend: `GET /ultimate_lora_loader/tree` walks `folder_paths.get_filename_list("loras")` (so it automatically respects any extra search paths you've set in `extra_model_paths.yaml`) and re-nests the flat `subfolder/file.safetensors` strings into a real nested dict by splitting on `/`.
 - Frontend caches that tree for 15 seconds per popup-open cycle so repeated clicks don't hammer the endpoint, but refreshes automatically after that — new LoRAs dropped into a folder on disk show up within ~15s without needing a full ComfyUI restart.
 
-## Known limitations / roadmap
+## Known limitations
 
-- No search/filter box in the Add Lora popup yet — for very large flat folders you'd still be scrolling. Fine for a folder-per-character/style setup, less fine if you dump 500 loras in one subfolder.
-- No trigger-word display, missing-file indicators, or CivitAI metadata lookups yet (rgthree's Power Lora Loader has some of this via its Info dialog). Under consideration for a future release.
-- No save/load presets yet for a particular lora+strength stack.
 - The stored lora identity in each row is the *relative path string* (e.g. `characters/lora1.safetensors`), same as vanilla ComfyUI lora loaders use internally — so workflows/JSON stay portable across machines as long as the same relative folder structure exists.
+- No search/filter box in the Add Lora popup yet — for very large flat folders you'd still be scrolling. Fine for a folder-per-character/style setup, less fine if you dump 500 loras in one subfolder. (Planned — see Roadmap below.)
 
-Issues and pull requests are welcome — see below.
+## Roadmap
+
+Planned features, roughly in the order they're likely to land:
+
+**Self-contained (no external services needed):**
+- Search/filter box in the Add Lora popup — type to filter instead of scrolling through folders
+- Duplicate detection — block re-adding a lora that's already in the stack, with a clear message, since there's no real use case for having the same file twice
+- Missing-file detection — if a saved workflow references a lora that's been moved or deleted, highlight that row (rather than only printing to the console), and offer a way to search for it
+
+**Trigger words, suggested strength, and CivitAI metadata (one combined feature):**
+- A clickable info icon after the lora name, showing trigger words and CivitAI metadata for that lora
+- Suggested strength range pulled from CivitAI where available — this isn't stored in the `.safetensors` file itself, so it depends on the CivitAI lookup rather than being derivable locally
+
+**Save/load presets:**
+- Save a particular lora + strength stack as a named preset, and re-apply it later without rebuilding it lora-by-lora
+
+Have a feature idea not listed here, or want to help build one of these? Open an issue — see below.
 
 ## Contributing
 
