@@ -135,6 +135,30 @@ const CSS = `    .fll-container {
       flex: 0 0 18px;
       width: 18px;
     }
+    .fll-base-model {
+      flex: 0 0 78px;
+      width: 78px;
+      max-width: 78px;
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 10px;
+      line-height: 1.2;
+      color: #c4b5fd;
+      background: #2a2840;
+      border: 1px solid #4a4568;
+      border-radius: 4px;
+      padding: 2px 5px;
+      text-align: center;
+      cursor: default;
+      user-select: none;
+    }
+    .fll-base-model.empty {
+      color: #666;
+      background: transparent;
+      border-color: transparent;
+    }
     .fll-preview-tip {
       position: fixed;
       z-index: 10050;
@@ -379,8 +403,9 @@ const CSS = `    .fll-container {
     .fll-popup {
       position: fixed;
       z-index: 10001;
-      min-width: 260px;
-      max-width: 360px;
+      min-width: 400px;
+      max-width: 600px;
+      width: min(600px, calc(100vw - 24px));
       max-height: 420px;
       display: flex;
       flex-direction: column;
@@ -422,7 +447,8 @@ const CSS = `    .fll-container {
 
     .fll-search {
       display: block;
-      width: 100%;
+      width: 75%;
+      max-width: 75%;
       box-sizing: border-box;
       margin: 0 0 6px 0;
       padding: 6px 8px;

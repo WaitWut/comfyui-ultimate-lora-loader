@@ -21,7 +21,7 @@ export function openLoraBrowser(x, y, onSelect) {
   // position, clamped to viewport
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  popup.style.left = Math.min(x, vw - 380) + "px";
+  popup.style.left = Math.min(x, vw - 620) + "px";
   popup.style.top = Math.min(y, vh - 440) + "px";
 
   const close = () => {
@@ -180,7 +180,7 @@ export function openLoraBrowser(x, y, onSelect) {
     const search = document.createElement("input");
     search.type = "search";
     search.className = "fll-search";
-    search.placeholder = "Filter folders, files & Civitai names…";
+    search.placeholder = "Filter name / file / base model…";
     search.value = searchQuery;
     search.autocomplete = "off";
     search.spellcheck = false;
@@ -220,7 +220,9 @@ export function openLoraBrowser(x, y, onSelect) {
           const full = fullPaths[f] || f;
           const meta = metaForFile(full);
           const civitai = (meta?.civitai_model_name || "").toLowerCase();
-          return civitai.includes(q);
+          if (civitai.includes(q)) return true;
+          const base = (meta?.base_model || "").toLowerCase();
+          return base.includes(q);
         })
       : files;
 
@@ -277,6 +279,17 @@ export function openLoraBrowser(x, y, onSelect) {
       const coverUrl = meta?.local_cover_path || null;
       const previewBtn = createPreviewButton(coverUrl);
 
+      const baseModel = document.createElement("div");
+      baseModel.className = "fll-base-model";
+      const bm = (meta?.base_model || "").trim();
+      if (bm) {
+        baseModel.textContent = bm;
+        baseModel.title = bm;
+      } else {
+        baseModel.classList.add("empty");
+        baseModel.textContent = "—";
+      }
+
       const labelWrap = document.createElement("div");
       labelWrap.className = "fll-entry-label-wrap";
 
@@ -298,6 +311,7 @@ export function openLoraBrowser(x, y, onSelect) {
 
       entry.appendChild(icon);
       entry.appendChild(previewBtn);
+      entry.appendChild(baseModel);
       entry.appendChild(labelWrap);
 
       entry.onclick = () => {

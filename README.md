@@ -14,8 +14,8 @@ Everything from the base node still works (folder browser, optional CLIP, drag-t
 1. **Two per-row info buttons**
     - **`?`** — [Civitai Toolkit](https://github.com/BAIKEMARK/ComfyUI-Civitai-Toolkit) **local DB** popup (gallery-style: name, tags, triggers from indexed scan)
     - **`i`** — [ComfyUI-Custom-Scripts](https://github.com/pythongosssss/ComfyUI-Custom-Scripts) **View Lora info** dialog (the same one as RMB on a default LoraLoader: preview images, Civitai link, trained words, …)
-2. **Civitai dual naming + cover preview** — when Toolkit has the LoRA indexed: Civitai title + filename on the row / in Add Lora; hover the image icon for cover
-3. **Add Lora browser UX** — sticky search (always visible while scrolling), autofocus on open, filter in the **current** folder (filename / folder / Civitai name), Tab stays inside the popup (Esc closes)
+2. **Civitai dual naming + cover preview + base model** — when Toolkit has the LoRA indexed: Civitai title + filename; hover image icon for cover; **Base** column in Add Lora; on stack rows hover name → base model tooltip only
+3. **Add Lora browser UX** — sticky search (~¾ width, always visible while scrolling), autofocus on open, filter in the **current** folder (filename / folder / Civitai name / base model), Tab stays inside the popup (Esc closes)
 
 Tested with **Civitai Toolkit 4.1.3** and **ComfyUI-Custom-Scripts 1.2.5**.
 
@@ -25,21 +25,24 @@ Tested with **Civitai Toolkit 4.1.3** and **ComfyUI-Custom-Scripts 1.2.5**.
 
 ![prev](docs/nev2.png)
 
+![prev](docs/nev5.png)
+
 ![prev](docs/nev3.png)
 
 ![prev](docs/nev4.png)
 
 ## What this build adds
 
-| Feature | Behavior |
-| --- | --- |
-| `?` on each row | Soft dependency on **Civitai Toolkit**. Opens Toolkit’s local-index info popup. |
-| `i` on each row | Soft dependency on **ComfyUI-Custom-Scripts (pysssss)**. Opens the full **View Lora info** dialog (preview / Civitai link / keywords). |
-| Dual name | Toolkit-indexed LoRAs show **Civitai title** (top) + **filename** (bottom) on stack rows and in Add Lora. Without Toolkit / not indexed → filename only. |
-| Cover preview | Image icon before the name; hover shows Toolkit `local_cover_path` cover (stack rows + Add Lora list). Dimmed when no cover. |
-| Filter in **Add Lora** | Filters the **current** folder only (filename / subfolder name / Civitai title). Cleared on drill-down / breadcrumb. |
-| Sticky search + autofocus | Search bar stays pinned while the list scrolls; focused when the popup opens or you change folder. |
-| Keyboard in popup | **Tab / Shift+Tab** cycle inside the popup (search → list → breadcrumbs). **Enter / Space** open/select. **Esc** closes. |
+| Feature                   | Behavior                                                                                                                                                 |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `?` on each row           | Soft dependency on **Civitai Toolkit**. Opens Toolkit’s local-index info popup.                                                                          |
+| `i` on each row           | Soft dependency on **ComfyUI-Custom-Scripts (pysssss)**. Opens the full **View Lora info** dialog (preview / Civitai link / keywords).                   |
+| Dual name                 | Toolkit-indexed LoRAs show **Civitai title** (top) + **filename** (bottom) on stack rows and in Add Lora. Without Toolkit / not indexed → filename only. |
+| Base model                | **Add Lora:** separate Base column. **Stack rows:** hover name → `base_model` tooltip only (no path/name duplicate).                                     |
+| Cover preview             | Image icon before the name; hover shows Toolkit cover (stack rows + Add Lora list). Dimmed when no cover.                                                |
+| Filter in **Add Lora**    | Filters the **current** folder only (filename / subfolder / Civitai title / base model). Cleared on drill-down / breadcrumb.                             |
+| Sticky search + autofocus | Search bar pinned (~¾ popup width) while the list scrolls; focused when the popup opens or you change folder.                                            |
+| Keyboard in popup         | **Tab / Shift+Tab** cycle inside the popup (search → list → breadcrumbs). **Enter / Space** open/select. **Esc** closes.                                 |
 
 For base-node behavior (install notes, CLIP optional, missing-file UX, etc.) see the [original README](https://github.com/WaitWut/comfyui-ultimate-lora-loader#readme).
 
@@ -47,10 +50,10 @@ For base-node behavior (install notes, CLIP optional, missing-file UX, etc.) see
 
 The loader node itself runs standalone. Dual naming / cover preview enrich from Toolkit when present (soft). For the info buttons you also need:
 
-| Button | Plugin | Tested version | Repo |
-| --- | --- | --- | --- |
-| **`?`** (+ names / covers) | Civitai Toolkit | **4.1.3** | [BAIKEMARK/ComfyUI-Civitai-Toolkit](https://github.com/BAIKEMARK/ComfyUI-Civitai-Toolkit) |
-| **`i`** | **ComfyUI-Custom-Scripts** (pysssss) | **1.2.5** | [pythongosssss/ComfyUI-Custom-Scripts](https://github.com/pythongosssss/ComfyUI-Custom-Scripts) |
+| Button                     | Plugin                               | Tested version | Repo                                                                                            |
+| -------------------------- | ------------------------------------ | -------------- | ----------------------------------------------------------------------------------------------- |
+| **`?`** (+ names / covers) | Civitai Toolkit                      | **4.1.3**      | [BAIKEMARK/ComfyUI-Civitai-Toolkit](https://github.com/BAIKEMARK/ComfyUI-Civitai-Toolkit)       |
+| **`i`**                    | **ComfyUI-Custom-Scripts** (pysssss) | **1.2.5**      | [pythongosssss/ComfyUI-Custom-Scripts](https://github.com/pythongosssss/ComfyUI-Custom-Scripts) |
 
 Install both into `ComfyUI/custom_nodes` if you want the full experience. Without Custom Scripts, **`i`** will fail with an alert; without Toolkit, **`?`** / dual names / covers degrade gracefully (filename-only, no cover).
 
@@ -73,14 +76,14 @@ Or copy this folder into `ComfyUI/custom_nodes/` and **fully restart ComfyUI**.
 
 Edit **`js/ullc/config.json`** in each copy so these fields are unique:
 
-| Field | What it controls |
-| --- | --- |
-| `extension_name` | frontend `registerExtension` id |
-| `node_class` | Comfy node type id (workflows) |
-| `node_display_name` | name in the Add Node menu |
-| `api_prefix` | backend route, e.g. `/ultimate_lora_loader_civitai` → `.../tree` |
-| `style_id` | CSS `<style>` element id |
-| `log_prefix` | console / server log tag |
+| Field               | What it controls                                                 |
+| ------------------- | ---------------------------------------------------------------- |
+| `extension_name`    | frontend `registerExtension` id                                  |
+| `node_class`        | Comfy node type id (workflows)                                   |
+| `node_display_name` | name in the Add Node menu                                        |
+| `api_prefix`        | backend route, e.g. `/ultimate_lora_loader_civitai` → `.../tree` |
+| `style_id`          | CSS `<style>` element id                                         |
+| `log_prefix`        | console / server log tag                                         |
 
 Example second copy: change `node_class` to `UltimateLoraLoaderCivitaiB`, `api_prefix` to `/ultimate_lora_loader_civitai_b`, and the other fields accordingly. Then fully restart ComfyUI.
 

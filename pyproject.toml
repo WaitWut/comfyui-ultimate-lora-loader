@@ -1,7 +1,7 @@
 [project]
 name = "ultimate-lora-loader-civitai"
 description = "Fork of Ultimate Lora Loader with folder browser, Civitai names/covers, and Toolkit-style info buttons. Runs standalone, but for FULL features install TWO other custom_nodes separately: Civitai Toolkit and ComfyUI-Custom-Scripts (pysssss). Tested Toolkit 4.1.3 + Custom-Scripts 1.2.5."
-version = "1.2.2"
+version = "1.2.3"
 license = { file = "LICENSE" }
 requires-python = ">=3.8"
 dependencies = []

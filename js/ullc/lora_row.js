@@ -128,10 +128,11 @@ export function makeRow(entry, { onChange, onRemove, onReplace, onInfoToolkit, o
       openLoraBrowser(rect.left, rect.bottom + 4, (loraPath) => onReplace(loraPath));
     };
   } else {
-    name.title = entry.lora;
+    // Avoid duplicating civitai/filename already shown — tooltip is base model only.
+    name.removeAttribute("title");
   }
 
-  // Soft-enrich from Civitai Toolkit local DB (display name + cover).
+  // Soft-enrich from Civitai Toolkit local DB (display name + cover; base in tooltip).
   if (!missing) {
     getCivitaiLoraMeta(entry.lora).then((meta) => {
       if (!meta || !name.isConnected) return;
@@ -140,12 +141,14 @@ export function makeRow(entry, { onChange, onRemove, onReplace, onInfoToolkit, o
         nameTitle.textContent = civitaiName;
         nameFile.textContent = shortName;
         nameFile.style.display = "";
-        name.title = `${civitaiName}\n${entry.lora}`;
       }
       if (meta.local_cover_path) {
         coverUrl = meta.local_cover_path;
         previewBtn.classList.add("has-preview");
       }
+      const bm = (meta.base_model || "").trim();
+      if (bm) name.title = bm;
+      else name.removeAttribute("title");
     });
   }
 
