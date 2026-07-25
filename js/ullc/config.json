@@ -1,0 +1,9 @@
+{
+  "_comment": "Change ALL unique fields below when installing a second copy of this package side-by-side. Keep api_prefix starting with / and without a trailing slash.",
+  "extension_name": "ultimate.lora.loader.civitai",
+  "node_class": "UltimateLoraLoaderCivitai",
+  "node_display_name": "Ultimate Lora Loader (Civitai)",
+  "api_prefix": "/ultimate_lora_loader_civitai",
+  "style_id": "ultimate-lora-loader-civitai-styles",
+  "log_prefix": "[UltimateLoraLoaderCivitai]"
+}

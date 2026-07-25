@@ -32,7 +32,8 @@ Tested with **Civitai Toolkit 4.1.3** and **ComfyUI-Custom-Scripts 1.2.5**.
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `?` on each row        | Soft dependency on **Civitai Toolkit**. Opens Toolkit’s local-index info popup.                                                        |
 | `i` on each row        | Soft dependency on **ComfyUI-Custom-Scripts (pysssss)**. Opens the full **View Lora info** dialog (preview / Civitai link / keywords). |
-| Filter in **Add Lora** | Filters the list for the folder you’re currently browsing. Cleared when you drill into a subfolder or click a breadcrumb.              |
+| Dual name + image preview | Toolkit-indexed LoRAs show Civitai title + filename; hover image icon for cover (stack rows + Add Lora list). Filter also matches Civitai names. |
+| Filter in **Add Lora** | Filters the current folder (filename / folder / Civitai name). Cleared on drill-down / breadcrumb.                                     |
 
 For base-node behavior (install notes, CLIP optional, missing-file UX, etc.) see the [original README](https://github.com/WaitWut/comfyui-ultimate-lora-loader#readme).
 
@@ -60,9 +61,24 @@ git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git
 
 Or copy this folder into `ComfyUI/custom_nodes/` and **fully restart ComfyUI**.
 
-> Don’t install this package _and_ a second copy of the same package side-by-side — duplicate API routes will crash startup. Keeping the original [Ultimate Lora Loader](https://github.com/WaitWut/comfyui-ultimate-lora-loader) installed next to this one is fine (different node / route names).
+> Don’t install two copies with the **same** `js/ullc/config.json` ids — duplicate API routes will crash startup. Keeping the original [Ultimate Lora Loader](https://github.com/WaitWut/comfyui-ultimate-lora-loader) next to this one is fine.
 
-Node name in the menu: **Ultimate Lora Loader (Civitai)** (`loaders`).
+### Multiple copies side-by-side
+
+Edit **`js/ullc/config.json`** in each copy so these fields are unique:
+
+| Field | What it controls |
+| --- | --- |
+| `extension_name` | frontend `registerExtension` id |
+| `node_class` | Comfy node type id (workflows) |
+| `node_display_name` | name in the Add Node menu |
+| `api_prefix` | backend route, e.g. `/ultimate_lora_loader_civitai` → `.../tree` |
+| `style_id` | CSS `<style>` element id |
+| `log_prefix` | console / server log tag |
+
+Example second copy: change `node_class` to `UltimateLoraLoaderCivitaiB`, `api_prefix` to `/ultimate_lora_loader_civitai_b`, and the other fields accordingly. Then fully restart ComfyUI.
+
+Default menu name: **Ultimate Lora Loader (Civitai)** (`loaders`).
 
 ## Usage
 
