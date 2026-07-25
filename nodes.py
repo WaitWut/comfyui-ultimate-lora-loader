@@ -3,16 +3,43 @@ Ultimate Lora Loader (Civitai) for ComfyUI
 ------------------------------------------
 Fork of Ultimate Lora Loader with per-row Civitai Toolkit info support.
 
-Files:
-  nodes.py                              <- this file (backend node + API route)
-  js/ultimate_lora_loader_civitai.js    <- frontend widget + Civitai info modal
+Identity (node class, API routes, menu name) comes from js/ullc/config.json
+so multiple copies can sit side-by-side — edit that one file per install.
 """
+
+import json
+from pathlib import Path
 
 import folder_paths
 import comfy.sd
 import comfy.utils
 from aiohttp import web
 from server import PromptServer
+
+
+def _load_config():
+    path = Path(__file__).resolve().parent / "js" / "ullc" / "config.json"
+    with path.open(encoding="utf-8") as f:
+        cfg = json.load(f)
+    required = (
+        "extension_name",
+        "node_class",
+        "node_display_name",
+        "api_prefix",
+        "style_id",
+        "log_prefix",
+    )
+    missing = [k for k in required if k not in cfg]
+    if missing:
+        raise RuntimeError(f"ullc config.json missing keys: {', '.join(missing)}")
+    prefix = str(cfg["api_prefix"]).rstrip("/")
+    if not prefix.startswith("/"):
+        prefix = "/" + prefix
+    cfg["api_prefix"] = prefix
+    return cfg
+
+
+CONFIG = _load_config()
 
 
 # ---------------------------------------------------------------------------
@@ -64,12 +91,12 @@ def _build_lora_tree():
 
 
 # ---------------------------------------------------------------------------
-# API route: GET /ultimate_lora_loader_civitai/tree
-# Guarded so a duplicate install of this package doesn't crash ComfyUI
-# with "method HEAD is already registered".
+# API route: GET {api_prefix}/tree  (from config.json)
+# Guarded so a duplicate install with the same api_prefix doesn't crash
+# ComfyUI with "method HEAD is already registered".
 # ---------------------------------------------------------------------------
 
-_TREE_ROUTE = "/ultimate_lora_loader_civitai/tree"
+_TREE_ROUTE = f"{CONFIG['api_prefix']}/tree"
 
 
 async def get_lora_tree(request):
@@ -85,8 +112,8 @@ if _TREE_ROUTE not in _existing_paths:
     PromptServer.instance.routes.get(_TREE_ROUTE)(get_lora_tree)
 else:
     print(
-        f"[UltimateLoraLoaderCivitai] Route {_TREE_ROUTE} already registered "
-        "(duplicate custom_nodes install?). Skipping."
+        f"{CONFIG['log_prefix']} Route {_TREE_ROUTE} already registered "
+        "(duplicate custom_nodes install with the same api_prefix?). Skipping."
     )
 
 
@@ -102,7 +129,7 @@ class UltimateLoraLoaderCivitai:
     reads that JSON and applies each enabled entry in order.
     """
 
-    NODE_NAME = "Ultimate Lora Loader (Civitai)"
+    NODE_NAME = CONFIG["node_display_name"]
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -163,7 +190,7 @@ class UltimateLoraLoaderCivitai:
 
             lora_path = folder_paths.get_full_path("loras", lora_name)
             if lora_path is None:
-                print(f"[UltimateLoraLoaderCivitai] Could not find lora: {lora_name}, skipping.")
+                print(f"{CONFIG['log_prefix']} Could not find lora: {lora_name}, skipping.")
                 continue
 
             lora_sd = comfy.utils.load_torch_file(lora_path, safe_load=True)
@@ -176,9 +203,9 @@ class UltimateLoraLoaderCivitai:
 
 
 NODE_CLASS_MAPPINGS = {
-    "UltimateLoraLoaderCivitai": UltimateLoraLoaderCivitai,
+    CONFIG["node_class"]: UltimateLoraLoaderCivitai,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "UltimateLoraLoaderCivitai": "Ultimate Lora Loader (Civitai)",
+    CONFIG["node_class"]: CONFIG["node_display_name"],
 }
