@@ -26,11 +26,60 @@ export function openLoraBrowser(x, y, onSelect) {
 
   const close = () => {
     if (searchTimer) clearTimeout(searchTimer);
+    document.removeEventListener("keydown", onPopupKeyDown, true);
     hidePreviewTip();
     overlay.remove();
   };
   overlay.addEventListener("mousedown", (e) => {
     if (e.target === overlay) close();
+  });
+
+  function getFocusables() {
+    const search = popup.querySelector(".fll-search");
+    const crumbs = [...popup.querySelectorAll(".fll-crumb:not(.current)")];
+    const entries = [...popup.querySelectorAll(".fll-entry")];
+    return [search, ...entries, ...crumbs].filter(Boolean);
+  }
+
+  function cycleFocus(backward) {
+    const items = getFocusables();
+    if (!items.length) return;
+    const active = document.activeElement;
+    let i = items.indexOf(active);
+    if (i === -1) i = backward ? 0 : -1;
+    const next = items[(i + (backward ? -1 : 1) + items.length) % items.length];
+    next.focus();
+    if (next.classList.contains("fll-entry")) {
+      next.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function onPopupKeyDown(e) {
+    if (!overlay.isConnected) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+      return;
+    }
+    if (e.key !== "Tab") return;
+    // Keep Tab inside the popup; don't let Comfy steal focus.
+    e.preventDefault();
+    e.stopPropagation();
+    cycleFocus(e.shiftKey);
+  }
+  document.addEventListener("keydown", onPopupKeyDown, true);
+
+  // Enter / Space activate focused crumb or entry (Tab lands on them).
+  popup.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const el = e.target;
+    if (!(el instanceof HTMLElement)) return;
+    if (el.classList.contains("fll-entry") || el.classList.contains("fll-crumb")) {
+      e.preventDefault();
+      e.stopPropagation();
+      el.click();
+    }
   });
 
   let path = []; // array of folder names representing current drill-down position
@@ -44,7 +93,7 @@ export function openLoraBrowser(x, y, onSelect) {
     fetchCivitaiLocalModels().catch(() => null),
   ]).then(([tree, models]) => {
     civitaiModels = models;
-    renderLevel(tree);
+    renderLevel(tree, { focusSearch: true });
   });
 
   function metaForFile(fullPath) {
@@ -59,10 +108,22 @@ export function openLoraBrowser(x, y, onSelect) {
       clearTimeout(searchTimer);
       searchTimer = null;
     }
-    renderLevel(tree);
+    renderLevel(tree, { focusSearch: true });
   }
 
-  function renderLevel(tree, { keepSearchFocus = false } = {}) {
+  function focusSearchInput(search) {
+    requestAnimationFrame(() => {
+      search.focus();
+      const len = search.value.length;
+      try {
+        search.setSelectionRange(len, len);
+      } catch (_) {
+        /* search inputs in some browsers are picky about selection */
+      }
+    });
+  }
+
+  function renderLevel(tree, { focusSearch = false } = {}) {
     hidePreviewTip();
 
     // walk to current path
@@ -79,6 +140,9 @@ export function openLoraBrowser(x, y, onSelect) {
 
     popup.innerHTML = "";
 
+    const header = document.createElement("div");
+    header.className = "fll-popup-header";
+
     // breadcrumbs
     const crumbs = document.createElement("div");
     crumbs.className = "fll-breadcrumbs";
@@ -86,6 +150,7 @@ export function openLoraBrowser(x, y, onSelect) {
     const rootCrumb = document.createElement("span");
     rootCrumb.className = "fll-crumb" + (path.length === 0 ? " current" : "");
     rootCrumb.textContent = "loras";
+    if (path.length > 0) rootCrumb.tabIndex = 0;
     rootCrumb.onclick = () => {
       goToPath([], tree);
     };
@@ -101,13 +166,14 @@ export function openLoraBrowser(x, y, onSelect) {
       const isCurrent = idx === path.length - 1;
       crumb.className = "fll-crumb" + (isCurrent ? " current" : "");
       crumb.textContent = seg;
+      if (!isCurrent) crumb.tabIndex = 0;
       crumb.onclick = () => {
         goToPath(path.slice(0, idx + 1), tree);
       };
       crumbs.appendChild(crumb);
     });
 
-    popup.appendChild(crumbs);
+    header.appendChild(crumbs);
 
     // Primitive filter over the currently visible folder list.
     // Also matches Civitai display names from Toolkit when available.
@@ -127,23 +193,14 @@ export function openLoraBrowser(x, y, onSelect) {
       if (searchTimer) clearTimeout(searchTimer);
       searchTimer = setTimeout(() => {
         searchQuery = pending;
-        renderLevel(tree, { keepSearchFocus: true });
+        renderLevel(tree, { focusSearch: true });
       }, SEARCH_DEBOUNCE_MS);
     };
-    popup.appendChild(search);
+    header.appendChild(search);
+    popup.appendChild(header);
 
-    if (keepSearchFocus) {
-      // Re-focus after re-render so debounce doesn't steal the caret.
-      requestAnimationFrame(() => {
-        search.focus();
-        const len = search.value.length;
-        try {
-          search.setSelectionRange(len, len);
-        } catch (_) {
-          /* search inputs in some browsers are picky about selection */
-        }
-      });
-    }
+    const list = document.createElement("div");
+    list.className = "fll-popup-list";
 
     // subfolders (any key that isn't __files__ / __full_paths__)
     const subfolders = Object.keys(node)
@@ -171,13 +228,16 @@ export function openLoraBrowser(x, y, onSelect) {
       const empty = document.createElement("div");
       empty.className = "fll-empty";
       empty.textContent = q ? "No matches" : "No LoRAs here";
-      popup.appendChild(empty);
+      list.appendChild(empty);
+      popup.appendChild(list);
+      if (focusSearch) focusSearchInput(search);
       return;
     }
 
     for (const folder of visibleFolders) {
       const entry = document.createElement("div");
       entry.className = "fll-entry";
+      entry.tabIndex = 0;
 
       const icon = document.createElement("span");
       icon.className = "fll-entry-icon";
@@ -199,12 +259,13 @@ export function openLoraBrowser(x, y, onSelect) {
         goToPath([...path, folder], tree);
       };
 
-      popup.appendChild(entry);
+      list.appendChild(entry);
     }
 
     for (const file of visibleFiles) {
       const entry = document.createElement("div");
       entry.className = "fll-entry";
+      entry.tabIndex = 0;
 
       const icon = document.createElement("span");
       icon.className = "fll-entry-icon";
@@ -244,7 +305,10 @@ export function openLoraBrowser(x, y, onSelect) {
         close();
       };
 
-      popup.appendChild(entry);
+      list.appendChild(entry);
     }
+
+    popup.appendChild(list);
+    if (focusSearch) focusSearchInput(search);
   }
 }

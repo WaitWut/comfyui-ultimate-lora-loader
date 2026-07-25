@@ -382,15 +382,32 @@ const CSS = `    .fll-container {
       min-width: 260px;
       max-width: 360px;
       max-height: 420px;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       background: #232326;
       border: 1px solid #46464c;
       border-radius: 8px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      padding: 4px;
+      padding: 0;
       box-sizing: border-box;
       font-size: 12px;
       color: #ddd;
+    }
+
+    .fll-popup-header {
+      flex: 0 0 auto;
+      padding: 4px 4px 0 4px;
+      background: #232326;
+      border-bottom: 1px solid #38383c;
+      z-index: 1;
+    }
+
+    .fll-popup-list {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 6px 4px 4px 4px;
     }
 
     .fll-breadcrumbs {
@@ -398,16 +415,16 @@ const CSS = `    .fll-container {
       flex-wrap: wrap;
       align-items: center;
       gap: 2px;
-      padding: 4px 6px 8px 6px;
-      border-bottom: 1px solid #38383c;
-      margin-bottom: 4px;
+      padding: 4px 6px 6px 6px;
+      margin-bottom: 0;
+      border-bottom: none;
     }
 
     .fll-search {
       display: block;
       width: 100%;
       box-sizing: border-box;
-      margin: 0 0 4px 0;
+      margin: 0 0 6px 0;
       padding: 6px 8px;
       background: #1c1c1f;
       border: 1px solid #444;
@@ -427,9 +444,14 @@ const CSS = `    .fll-container {
       cursor: pointer;
       color: #a78bfa;
       white-space: nowrap;
+      border-radius: 3px;
     }
     .fll-crumb:hover {
       text-decoration: underline;
+    }
+    .fll-crumb:focus-visible {
+      outline: 1px solid #6d5aa8;
+      outline-offset: 1px;
     }
     .fll-crumb-sep {
       color: #666;
@@ -452,6 +474,11 @@ const CSS = `    .fll-container {
       cursor: pointer;
     }
     .fll-entry:hover {
+      background: #34343a;
+    }
+    .fll-entry:focus-visible {
+      outline: 1px solid #6d5aa8;
+      outline-offset: -1px;
       background: #34343a;
     }
     .fll-entry-icon {

@@ -18,22 +18,24 @@ Everything from the base node still works (folder browser, optional CLIP, drag-t
 
 Tested with **Civitai Toolkit 4.1.3** and **ComfyUI-Custom-Scripts 1.2.5**.
 
-![Info buttons on a LoRA row](docs/toolkitex1.png)
+![prev](docs/nev0.png)
 
-![Info buttons on a LoRA row](docs/toolkitex2.png)
+![prev](docs/nev1.png)
 
-![Filter matching a folder in the current browser level](docs/filterex2.png)
+![prev](docs/nev2.png)
 
-![Filter matching a LoRA file in the current browser level](docs/filterex1.png)
+![prev](docs/nev3.png)
+
+![prev](docs/nev4.png)
 
 ## What this build adds
 
-| Feature                | Behavior                                                                                                                               |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `?` on each row        | Soft dependency on **Civitai Toolkit**. Opens Toolkit’s local-index info popup.                                                        |
-| `i` on each row        | Soft dependency on **ComfyUI-Custom-Scripts (pysssss)**. Opens the full **View Lora info** dialog (preview / Civitai link / keywords). |
+| Feature                   | Behavior                                                                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `?` on each row           | Soft dependency on **Civitai Toolkit**. Opens Toolkit’s local-index info popup.                                                                  |
+| `i` on each row           | Soft dependency on **ComfyUI-Custom-Scripts (pysssss)**. Opens the full **View Lora info** dialog (preview / Civitai link / keywords).           |
 | Dual name + image preview | Toolkit-indexed LoRAs show Civitai title + filename; hover image icon for cover (stack rows + Add Lora list). Filter also matches Civitai names. |
-| Filter in **Add Lora** | Filters the current folder (filename / folder / Civitai name). Cleared on drill-down / breadcrumb.                                     |
+| Filter in **Add Lora**    | Filters the current folder (filename / folder / Civitai name). Cleared on drill-down / breadcrumb.                                               |
 
 For base-node behavior (install notes, CLIP optional, missing-file UX, etc.) see the [original README](https://github.com/WaitWut/comfyui-ultimate-lora-loader#readme).
 
@@ -67,14 +69,14 @@ Or copy this folder into `ComfyUI/custom_nodes/` and **fully restart ComfyUI**.
 
 Edit **`js/ullc/config.json`** in each copy so these fields are unique:
 
-| Field | What it controls |
-| --- | --- |
-| `extension_name` | frontend `registerExtension` id |
-| `node_class` | Comfy node type id (workflows) |
-| `node_display_name` | name in the Add Node menu |
-| `api_prefix` | backend route, e.g. `/ultimate_lora_loader_civitai` → `.../tree` |
-| `style_id` | CSS `<style>` element id |
-| `log_prefix` | console / server log tag |
+| Field               | What it controls                                                 |
+| ------------------- | ---------------------------------------------------------------- |
+| `extension_name`    | frontend `registerExtension` id                                  |
+| `node_class`        | Comfy node type id (workflows)                                   |
+| `node_display_name` | name in the Add Node menu                                        |
+| `api_prefix`        | backend route, e.g. `/ultimate_lora_loader_civitai` → `.../tree` |
+| `style_id`          | CSS `<style>` element id                                         |
+| `log_prefix`        | console / server log tag                                         |
 
 Example second copy: change `node_class` to `UltimateLoraLoaderCivitaiB`, `api_prefix` to `/ultimate_lora_loader_civitai_b`, and the other fields accordingly. Then fully restart ComfyUI.
 
