@@ -15,9 +15,13 @@ Everything from the base node still works (folder browser, optional CLIP, drag-t
     - **`?`** — [Civitai Toolkit](https://github.com/BAIKEMARK/ComfyUI-Civitai-Toolkit) **local DB** popup (gallery-style: name, tags, triggers from indexed scan)
     - **`i`** — [ComfyUI-Custom-Scripts](https://github.com/pythongosssss/ComfyUI-Custom-Scripts) **View Lora info** dialog (the same one as RMB on a default LoraLoader: preview images, Civitai link, trained words, …)
 2. **Civitai dual naming + cover preview + base model** — when Toolkit has the LoRA indexed: Civitai title + filename; hover image icon for cover; **Base** column in Add Lora; on stack rows hover name → base model tooltip only
-3. **Add Lora browser UX** — sticky search (~¾ width, always visible while scrolling), autofocus on open, filter in the **current** folder (filename / folder / Civitai name / base model), Tab stays inside the popup (Esc closes)
+3. **Add Lora browser UX** — sticky search (~¾ width), autofocus on open; empty = browse current folder, with text = recursive search under current breadcrumb (filename / path / Civitai name / base model); Tab stays inside the popup (Esc closes)
 
 Tested with **Civitai Toolkit 4.1.3** and **ComfyUI-Custom-Scripts 1.2.5**.
+
+**Latest:** [1.3.0 — recursive search grouped by folder](docs/1.3.0/CHANGELOG.md)
+
+![1.3.0 search](docs/1.3.0/0.png)
 
 ![prev](docs/nev0.png)
 
@@ -40,7 +44,7 @@ Tested with **Civitai Toolkit 4.1.3** and **ComfyUI-Custom-Scripts 1.2.5**.
 | Dual name                 | Toolkit-indexed LoRAs show **Civitai title** (top) + **filename** (bottom) on stack rows and in Add Lora. Without Toolkit / not indexed → filename only. |
 | Base model                | **Add Lora:** separate Base column. **Stack rows:** hover name → `base_model` tooltip only (no path/name duplicate).                                     |
 | Cover preview             | Image icon before the name; hover shows Toolkit cover (stack rows + Add Lora list). Dimmed when no cover.                                                |
-| Filter in **Add Lora**    | Filters the **current** folder only (filename / subfolder / Civitai title / base model). Cleared on drill-down / breadcrumb.                             |
+| Search in **Add Lora**    | Empty = browse current folder. With text = recursive search under the **current breadcrumb root**, results **grouped by folder** (click group header to open it). Cleared on drill-down / breadcrumb. |
 | Sticky search + autofocus | Search bar pinned (~¾ popup width) while the list scrolls; focused when the popup opens or you change folder.                                            |
 | Keyboard in popup         | **Tab / Shift+Tab** cycle inside the popup (search → list → breadcrumbs). **Enter / Space** open/select. **Esc** closes.                                 |
 
@@ -93,7 +97,7 @@ Default menu name: **Ultimate Lora Loader (Civitai)** (`loaders`).
 
 1. Add **Ultimate Lora Loader (Civitai)** to the canvas.
 2. Wire `model` (and optionally `clip`).
-3. **Add Lora** → type to filter the current folder (search is focused and stays visible while scrolling) → Tab through results → Enter to pick / open a folder. Esc closes.
+3. **Add Lora** → browse folders, or type to search under the current breadcrumb (all folders from root, or only inside a drilled-down folder) → Tab through results → Enter to pick / open a folder. Esc closes.
 4. On each stack row: hover the **image** icon for cover; click **`?`** for Toolkit local info, or **`i`** for the full View Lora info dialog.
 
 ## Bug reports

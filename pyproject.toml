@@ -1,7 +1,7 @@
 [project]
 name = "ultimate-lora-loader-civitai"
 description = "Fork of Ultimate Lora Loader with folder browser, Civitai names/covers, and Toolkit-style info buttons. Runs standalone, but for FULL features install TWO other custom_nodes separately: Civitai Toolkit and ComfyUI-Custom-Scripts (pysssss). Tested Toolkit 4.1.3 + Custom-Scripts 1.2.5."
-version = "1.2.3"
+version = "1.3.0"
 license = { file = "LICENSE" }
 requires-python = ">=3.8"
 dependencies = []
@@ -14,6 +14,7 @@ Repository = "https://github.com/StoneZol/comfyui-ultimate-lora-loader-civitai-t
 PublisherId = "stone-zol"
 DisplayName = "Ultimate Lora Loader (Civitai)"
 Icon = ""
+Banner = "https://raw.githubusercontent.com/StoneZol/comfyui-ultimate-lora-loader-civitai-toolkit-supported/main/docs/img/prev.png"
 
 # Soft dependencies (not installed via pip — ComfyUI custom_nodes). Versions we tested against:
 [tool.ultimate-lora-loader-civitai.tested_with]

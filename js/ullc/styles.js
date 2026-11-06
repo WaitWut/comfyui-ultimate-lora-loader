@@ -526,6 +526,36 @@ const CSS = `    .fll-container {
       gap: 1px;
       overflow: hidden;
     }
+    .fll-search-group {
+      padding: 6px 8px 4px 8px;
+      margin-top: 4px;
+      font-size: 11px;
+      color: #a78bfa;
+      border-bottom: 1px solid #38383c;
+      user-select: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .fll-search-group.clickable {
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .fll-search-group.clickable:hover {
+      background: #2e2e34;
+    }
+    .fll-search-group:focus-visible {
+      outline: 1px solid #6d5aa8;
+      outline-offset: -1px;
+    }
+    .fll-entry-path {
+      font-size: 10px;
+      color: #a78bfa;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      opacity: 0.9;
+    }
     .fll-entry-label-sub {
       font-size: 10px;
       color: #888;
